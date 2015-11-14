@@ -38,7 +38,7 @@ if ( !defined('IN_ALTERCMS_CORE_ONE') ) die("Hacking attempt");
 define ( 'SQL_HOST', 'localhost' );			// Database server host
 define ( 'SQL_BASE', 'work_cpa' );			// Database name
 define ( 'SQL_USER', 'root' );				// Database user
-define ( 'SQL_PASS', '1865' );				// Database password
+define ( 'SQL_PASS', '' );					// Database password
 define ( 'SQL_PREF', 'cpa_' );				// Database prefix
 define ( 'SQL_CHARSET', 'utf8' );			// Main charset
 define ( 'SQL_COLLATE', 'utf8_general_ci');	// Collation charset
