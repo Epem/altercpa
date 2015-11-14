@@ -1,0 +1,47 @@
+﻿<?php
+
+/**
+ * Взаимодействие с сервисом MyCPA
+ * @param $id Ваш ID в системе
+ * @param $key Ваш API-ключ
+ * @param $app Приложение для взаимодействия (wm или sale)
+ * @param $func Запрашваемая функция
+ * @param $data Массив параметров
+ * @param $format Формат возвращаемого результата (serial, json, raw)
+ * @return array Результат выполнения
+ */
+function apimycpa ( $id, $key, $app, $func, $data = array(), $format = 'serial' ) {
+
+	// В целях беопасности к запросу добавляются два параметра - время и nonce
+	$n = ''; $a = '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM';
+	for ( $i = 0; $i < 62; $i++ ) $n .= $a{ rand( 0, $l ) };
+	$data['_nonce'] = $n;
+	$data['_timer'] = time();
+
+	// Запрос подписывается ключом по методу SHA-1
+	ksort( $data );
+	$post = http_build_query( $data );
+	$sign = hash_hmac( 'sha1', $post, $key );
+
+	// Формируем URL вида mycpa.ru/app/func.json?id=13-abcd и запрашиваем данные
+	$url = 'http://work.cpa/api/' . $app . '/' . $func . '.' . $format . '?id=' . $id . '-' . $sign;
+	$curl = curl_init( $url );
+	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, true );
+	curl_setopt( $curl, CURLOPT_TIMEOUT, 30 );
+	curl_setopt( $curl, CURLOPT_POST, 1 );
+	curl_setopt( $curl, CURLOPT_POSTFIELDS, $post );
+	$result = curl_exec( $curl );
+	curl_close( $curl );
+
+	// Результат обрабатывается в зависимости от формата
+	// raw - чистый вывод, другие - array ( status - статус выполнения, остальное - данные )
+	switch ( $format ) {
+		case 'raw':		return $result;
+		case 'json':	return json_decode( $result, true );
+		case 'text':	parse_str( $result, $a ); return $a;
+		default:		return unserialize( $result );
+	}
+
+}
+
+?>

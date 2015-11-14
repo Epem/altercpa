@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<title>API &mdash; MyCPA: руководство пользователя</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link type="text/css" href="css/bootstrap.css" rel="stylesheet" />
+	<link type="text/css" href="css/bootstrap-theme.css" rel="stylesheet" />
+	<link type="text/css" href="css/style.css" rel="stylesheet" />
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/bootstrap.js"></script>
+</head>
+<body data-spy="scroll" data-target=".bs-sidebar">
+
+<div class="container">
+
+    <header class="navbar navbar-default navbar-fixed-top"><div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+			<a class="navbar-brand mainlogo" href="index.html">MyCPA: помощь</a>
+		</div>
+		<div class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				<li><a href="index.html">Общая информация</a></li>
+				<li><a href="faq.html">FAQ</a></li>
+				<li><a href="api.html">API</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="/">Вернуться на сайт</a></li>
+			</ul>
+		</div>
+	</div></header>
+
+	<div class="container bs-docs-container"><div class="row">
+
+	<div class="col-md-3 hidden-xs hidden-sm">
+		<div data-spy="affix" data-offset-top="0" class="bs-sidebar hidden-print" role="complementary">
+		<ul class="nav bs-sidenav">
+			<li><a href="#overview">Обзор API</a></li>
+			<li><a href="#principles">Принципы работы</a></li>
+			<li>
+				<a href="#webmaster">Вебмастер</a>
+				<ul class="nav">
+					<li><a href="#offers">Список офферов</a></li>
+					<li><a href="#offersite">Сайты оффера</a></li>
+					<li><a href="#flows">Список потоков</a></li>
+					<li><a href="#flowadd">Создание потока</a></li>
+					<li><a href="#flowedit">Редактирование потока</a></li>
+					<li><a href="#flowdel">Удаление потока</a></li>
+					<li><a href="#stats">Статистика по датам</a></li>
+					<li><a href="#lead">Статистика по лидам</a></li>
+					<li><a href="#sources">Статистика по источникам</a></li>
+				</ul>
+			</li>
+			<li>
+				<a href="#sale">Поставщик</a>
+				<ul class="nav">
+					<li><a href="#orderlist">Список заказов</a></li>
+					<li><a href="#orderedit">Редактирование заказа</a></li>
+				</ul>
+			</li>
+		</ul>
+		</div>
+	</div>
+
+	<div class="col-md-9" role="main">
+
+		<div class="bs-docs-section">
+
+			<div class="page-header"><h1 id="overview">Обзор API-функций MyCPA</h1></div>
+			<p class="lead">Интерфейс API-функций платформы MyCPA позволяет выполнять большую часть действий вебмастера и поставщика, реализованных на самом сайте. Чтобы подключить API, зайдите на страницу своего <a href="/profile">профиля</a> в системе.</p>
+			<p>Взаимодействие с сервисом осуществляется по протоколу HTTP (при необходимости - HTTPS). Формат результата - JSON или сериализованные данные PHP. Ограничений на количество запросов нет. Интерфейс API-функций может быть расширен пр необходимости. Если вам не хватает какой-либо функции, обратитесь в <a href="/support">техподдержку</a>.</p>
+
+		</div>
+
+		<div class="bs-docs-section">
+
+			<div class="page-header"><h1 id="principles">Принципы работы</h1></div>
+			<p>Чтобы начать работу с API-интерфейсом, необходимо получить ID и ключ. Они доступны в разделе «<a href="/profile">Профиль</a>» системы. Далее по тексту пользовательский ID будет обозначаться <code>{user}</code>, а ключ доступа - <code>{key}</code>.</p>
+			<p>API-интернфейс состоит из нескольких приложений <code>{app}</code> с набором доступных функций <code>{func}</code>.</p>
+			<p>Для обращения к API-функции, необходимо отправить POST запрос на адрес вида:</p>
+			<pre><code>http://work.cpa/api/{app}/{func}.{format}?id={user}-{sign}</code></pre>
+			<p>URL запроса состоит из следующих частей</p>
+			<table class="table table-striped">
+            	<thead><tr>
+					<th>Параметр</th>
+					<th>Описание</th>
+            	</tr></thead>
+            	<tbody>
+					<tr>
+                    	<td><code>{app}</code></td>
+                    	<td>Идентификатор приложения:
+                    		<ul>
+                    			<li><code>wm</code> - интерфейс <a href="#webmaster">вебмастера</a></li>
+                    			<li><code>sale</code> - интерфейс <a href="#sale">поставщика</a></li>
+                    		</ul>
+                    	</td>
+					</tr>
+					<tr>
+                    	<td><code>{func}</code></td>
+                    	<td>Идентификатор функции в рамках приложения.</td>
+					</tr>
+					<tr>
+                    	<td><code>{format}</code></td>
+                    	<td>Формат возвращаемого результата:
+                    		<ul>
+                    			<li><code>serial</code> - сериализованные данные PHP, предназначенные для обработки функцией <code>unserialize</code></li>
+                    			<li><code>json</code> - данные в формате JSON</li>
+                    			<li><code>xml</code> - данные в формате XML</li>
+                    			<li><code>text</code> - данные в виде строки параметров, аналогичной используемым в URL: <code>param1=value1&amp;param2=value2</code></li>
+                    			<li><code>raw</code> - необработанные данные (используется только для некоторых функций)</li>
+                    		</ul>
+                    	</td>
+					</tr>
+					<tr>
+                    	<td><code>{user}</code></td>
+                    	<td>Идентификатор пользователя в системе</td>
+					</tr>
+					<tr>
+                    	<td><code>{sign}</code></td>
+                    	<td>Подпись запроса, сгенерированная с помощью SHA-1 (см. ниже) или ключ доступа {key} в чистом виде</td>
+					</tr>
+            	</tbody>
+			</table>
+			<p>Данные для запроса передаются в POST-части запроса. На основе данного запроса формируется цифровая подпись по алгоритму SHA-1. Из параметров и их значений формируется строка вида <code>param1=value1&amp;param2=value2</code> и подписывается ключом <code>{key}</code> через SHA-1. На PHP это выглядит следующим образом:</p>
+			<pre><code>$post = http_build_query( $data );
+$sign = hash_hmac( 'sha1', $post, $key )</code></pre>
+			<p>В данном примере: <code>$data</code> - массив параметров запроса, <code>$key</code> - API-ключ пользователя. Использование подписи в качестве ключа не обязательно, но рекомендуемо. В случае необходимости, можно передавать сам ключ доступа в открытом виде.</p>
+			<p>Функция для работы с нашим интерфейсом на PHP представлена ниже:</p>
+
+<pre><code class="php"><span style="color: #000000"><span style="color: #0000BB">&lt;?php</span><span style="color: #FF8000">/**&nbsp;*&nbsp;Взаимодействие&nbsp;с&nbsp;сервисом&nbsp;MyCPA&nbsp;*&nbsp;@param&nbsp;$id&nbsp;Ваш&nbsp;ID&nbsp;в&nbsp;системе&nbsp;*&nbsp;@param&nbsp;$key&nbsp;Ваш&nbsp;API-ключ&nbsp;*&nbsp;@param&nbsp;$app&nbsp;Приложение&nbsp;для&nbsp;взаимодействия&nbsp;(wm&nbsp;или&nbsp;sale)&nbsp;*&nbsp;@param&nbsp;$func&nbsp;Запрашваемая&nbsp;функция&nbsp;*&nbsp;@param&nbsp;$data&nbsp;Массив&nbsp;параметров&nbsp;*&nbsp;@param&nbsp;$format&nbsp;Формат&nbsp;возвращаемого&nbsp;результата&nbsp;(serial,&nbsp;json,&nbsp;raw)&nbsp;*&nbsp;@return&nbsp;array&nbsp;Результат&nbsp;выполнения&nbsp;*/</span><span style="color: #007700">function&nbsp;</span><span style="color: #0000BB">apimycpa&nbsp;</span><span style="color: #007700">(&nbsp;</span><span style="color: #0000BB">$id</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$key</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$app</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$func</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$data&nbsp;</span><span style="color: #007700">=&nbsp;array(),&nbsp;</span><span style="color: #0000BB">$format&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'serial'&nbsp;</span><span style="color: #007700">)&nbsp;{&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;В&nbsp;целях&nbsp;беопасности&nbsp;к&nbsp;запросу&nbsp;добавляются&nbsp;два&nbsp;параметра&nbsp;-&nbsp;время&nbsp;и&nbsp;nonce&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$n&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">''</span><span style="color: #007700">;&nbsp;</span><span style="color: #0000BB">$a&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM'</span><span style="color: #007700">;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(&nbsp;</span><span style="color: #0000BB">$i&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">0</span><span style="color: #007700">;&nbsp;</span><span style="color: #0000BB">$i&nbsp;</span><span style="color: #007700">&lt;&nbsp;</span><span style="color: #0000BB">62</span><span style="color: #007700">;&nbsp;</span><span style="color: #0000BB">$i</span><span style="color: #007700">++&nbsp;)&nbsp;</span><span style="color: #0000BB">$n&nbsp;</span><span style="color: #007700">.=&nbsp;</span><span style="color: #0000BB">$a</span><span style="color: #007700">{&nbsp;</span><span style="color: #0000BB">rand</span><span style="color: #007700">(&nbsp;</span><span style="color: #0000BB">0</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$l&nbsp;</span><span style="color: #007700">)&nbsp;};&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$data</span><span style="color: #007700">[</span><span style="color: #DD0000">'_nonce'</span><span style="color: #007700">]&nbsp;=&nbsp;</span><span style="color: #0000BB">$n</span><span style="color: #007700">;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$data</span><span style="color: #007700">[</span><span style="color: #DD0000">'_timer'</span><span style="color: #007700">]&nbsp;=&nbsp;</span><span style="color: #0000BB">time</span><span style="color: #007700">();&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;Запрос&nbsp;подписывается&nbsp;ключом&nbsp;по&nbsp;методу&nbsp;SHA-1&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">ksort</span><span style="color: #007700">(&nbsp;</span><span style="color: #0000BB">$data&nbsp;</span><span style="color: #007700">);&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$post&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">http_build_query</span><span style="color: #007700">(&nbsp;</span><span style="color: #0000BB">$data&nbsp;</span><span style="color: #007700">);&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$sign&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">hash_hmac</span><span style="color: #007700">(&nbsp;</span><span style="color: #DD0000">'sha1'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$post</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$key&nbsp;</span><span style="color: #007700">);&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;Формируем&nbsp;URL&nbsp;вида&nbsp;work.cpa/app/func.json?id=13-abcd&nbsp;и&nbsp;запрашиваем&nbsp;данные&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'http://work.cpa/api/'&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #0000BB">$app&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #DD0000">'/'&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #0000BB">$func&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #DD0000">'.'&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #0000BB">$format&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #DD0000">'?id='&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #0000BB">$id&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #DD0000">'-'&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #0000BB">$sign</span><span style="color: #007700">;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$curl&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">curl_init</span><span style="color: #007700">(&nbsp;</span><span style="color: #0000BB">$url&nbsp;</span><span style="color: #007700">);&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">curl_setopt</span><span style="color: #007700">(&nbsp;</span><span style="color: #0000BB">$curl</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">CURLOPT_RETURNTRANSFER</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">true&nbsp;</span><span style="color: #007700">);&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">curl_setopt</span><span style="color: #007700">(&nbsp;</span><span style="color: #0000BB">$curl</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">CURLOPT_TIMEOUT</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">30&nbsp;</span><span style="color: #007700">);&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">curl_setopt</span><span style="color: #007700">(&nbsp;</span><span style="color: #0000BB">$curl</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">CURLOPT_POST</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">1&nbsp;</span><span style="color: #007700">);&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">curl_setopt</span><span style="color: #007700">(&nbsp;</span><span style="color: #0000BB">$curl</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">CURLOPT_POSTFIELDS</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$post&nbsp;</span><span style="color: #007700">);&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$result&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">curl_exec</span><span style="color: #007700">(&nbsp;</span><span style="color: #0000BB">$curl&nbsp;</span><span style="color: #007700">);&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">curl_close</span><span style="color: #007700">(&nbsp;</span><span style="color: #0000BB">$curl&nbsp;</span><span style="color: #007700">);&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;Результат&nbsp;обрабатывается&nbsp;в&nbsp;зависимости&nbsp;от&nbsp;формата&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;raw&nbsp;-&nbsp;чистый&nbsp;вывод,&nbsp;другие&nbsp;-&nbsp;array&nbsp;(&nbsp;status&nbsp;-&nbsp;статус&nbsp;выполнения,&nbsp;остальное&nbsp;-&nbsp;данные&nbsp;)&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">switch&nbsp;(&nbsp;</span><span style="color: #0000BB">$format&nbsp;</span><span style="color: #007700">)&nbsp;{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;</span><span style="color: #DD0000">'raw'</span><span style="color: #007700">:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;</span><span style="color: #0000BB">$result</span><span style="color: #007700">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;</span><span style="color: #DD0000">'json'</span><span style="color: #007700">:&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;</span><span style="color: #0000BB">json_decode</span><span style="color: #007700">(&nbsp;</span><span style="color: #0000BB">$result</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">true&nbsp;</span><span style="color: #007700">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;</span><span style="color: #DD0000">'text'</span><span style="color: #007700">:&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">parse_str</span><span style="color: #007700">(&nbsp;</span><span style="color: #0000BB">$result</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$a&nbsp;</span><span style="color: #007700">);&nbsp;return&nbsp;</span><span style="color: #0000BB">$a</span><span style="color: #007700">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;</span><span style="color: #0000BB">unserialize</span><span style="color: #007700">(&nbsp;</span><span style="color: #0000BB">$result&nbsp;</span><span style="color: #007700">);&nbsp;&nbsp;&nbsp;&nbsp;}}</span><span style="color: #0000BB">?&gt;</span>
+</span></code></pre>
+
+		<p>Вы можете <a href="docs/mycpa-api.txt" download="mycpa-api.php">скачать представленный Выше код</a> для удобства.</p>
+		<p>Эта функция получает на входе следующие параметры:</p>
+		<table class="table table-striped">
+           	<thead><tr>
+				<th>Параметр</th>
+				<th>Тип</th>
+				<th>Описание</th>
+           	</tr></thead>
+           	<tbody>
+				<tr>
+                   	<td><code>$id</code></td>
+                   	<td><code>int</code></td>
+                   	<td>Идентификатор пользователя в системе</td>
+				</tr>
+				<tr>
+                   	<td><code>$key</code></td>
+                   	<td><code>string</code></td>
+                   	<td>API-ключ пользователя</td>
+				</tr>
+				<tr>
+                   	<td><code>$app</code></td>
+                   	<td><code>string</code></td>
+                   	<td>Идентификатор приложения</td>
+				</tr>
+				<tr>
+                   	<td><code>$func</code></td>
+                   	<td><code>string</code></td>
+                   	<td>Идентификатор функции</td>
+				</tr>
+				<tr>
+                   	<td><code>$data</code></td>
+                   	<td><code>array</code></td>
+                   	<td>Массив параметров функции (необязательный параметр)</td>
+				</tr>
+				<tr>
+                   	<td><code>$format</code></td>
+                   	<td><code>string</code></td>
+                   	<td>Формат возвращаемого результата (необязательный параметр)</td>
+				</tr>
+           	</tbody>
+		</table>
+		<p>Функция возвращает массив результата в случае форматов <code>json</code>, <code>serial</code> или <code>text</code>, и чистый вывод для формата <code>raw</code>.</p>
+
+
+		</div>
+
+		<div class="bs-docs-section">
+
+			<div class="page-header"><h1 id="webmaster">Вебмастер</h1></div>
+			<p>Функции веб-мастера позволяют работать с потоками и получать статистическую информацию аккаунта. Для работы со всеми функциями необходимо обращаться к приложению <code>wm</code>.</p>
+			<p>URL: <code>http://work.cpa/api/wm/{function}.json?id={user}-{sign}</code></p>
+
+			<h2 id="offers">Список офферов</h2>
+			<p>URL: <code>http://work.cpa/api/wm/offers.json?id={user}-{sign}</code></p>
+			<p>ID функции - <code>offers</code>. Функция позволяет получить список активных офферов, их описание и данные о конверсии. Данная функция не принимает дополнительных параметров.</p>
+			<p>Результатом выполнения функции является ассоциативный массив списка офферов со следующими полями:</p>
+			<table class="table table-striped">
+            	<thead><tr>
+					<th>Поле</th>
+					<th>Описание</th>
+            	</tr></thead>
+            	<tbody>
+					<tr>
+                    	<td><code>id</code></td>
+                    	<td>Идентификатор оффера в системе</td>
+					</tr>
+					<tr>
+                    	<td><code>name</code></td>
+                    	<td>Название оффера</td>
+					</tr>
+					<tr>
+                    	<td><code>descr</code></td>
+                    	<td>Описание оффера</td>
+					</tr>
+					<tr>
+                    	<td><code>price</code></td>
+                    	<td>Стоимость одной единицы товара по офферу (без доставки)</td>
+					</tr>
+					<tr>
+                    	<td><code>wm</code></td>
+                    	<td>Отчисления веб-мастеру по офферу</td>
+					</tr>
+					<tr>
+                    	<td><code>geo</code></td>
+                    	<td>Поддерживаемые GEO по офферу, список ISO-кодов стран через запятую, в формате <code>ru,by,kz</code></td>
+					</tr>
+					<tr>
+                    	<td><code>epc</code></td>
+                    	<td>EPC - Earn Per Click, средний доход за каждый клик</td>
+					</tr>
+					<tr>
+                    	<td><code>cr</code></td>
+                    	<td>Convert Ratio, соотношение уникальных посетителей к количеству успешных заказов</td>
+					</tr>
+					<tr>
+                    	<td><code>flows</code></td>
+                    	<td>Количество созданных потоков по данному офферу</td>
+					</tr>
+					<tr>
+                    	<td><code>male</code></td>
+                    	<td>Процент успешных заказов, совершенных мужчинами</td>
+					</tr>
+					<tr>
+                    	<td><code>female</code></td>
+                    	<td>Процент успешных заказов, совершенных женщинами</td>
+					</tr>
+            	</tbody>
+			</table>
+
+			<h2 id="offersite">Сайты оффера</h2>
+			<p>URL: <code>http://work.cpa/api/wm/sites.json?id={user}-{sign}</code></p>
+			<p>ID функции - <code>sites</code>. Функция позволяет получить список сайтов, прикремлённых к указанному офферу. На входе функция получает один параметр: <code>offer</code> - идентификатор оффера, для которого требуется получить список сайтов.</p>
+			<p>Результатом выполнения функции является ассоциативный массив с двумя полями: <code>land</code> и <code>space</code>. Первое содержит список лэндингов данного оффера, второе - список доступных прокладок. По каждому из сайтов представлена следующая информация:</p>
+			<table class="table table-striped">
+            	<thead><tr>
+					<th>Поле</th>
+					<th>Описание</th>
+            	</tr></thead>
+            	<tbody>
+					<tr>
+                    	<td><code>id</code></td>
+                    	<td>Идентификатор сайта в системе</td>
+					</tr>
+					<tr>
+                    	<td><code>url</code></td>
+                    	<td>Полный адрес сайта</td>
+					</tr>
+					<tr>
+                    	<td><code>epc</code></td>
+                    	<td>EPC - Earn Per Click, средний доход за каждый клик</td>
+					</tr>
+					<tr>
+                    	<td><code>cr</code></td>
+                    	<td>Convert Ratio, соотношение уникальных посетителей к количеству успешных заказов</td>
+					</tr>
+            	</tbody>
+			</table>
+
+
+			<h2 id="flows">Список потоков</h2>
+			<p>URL: <code>http://work.cpa/api/wm/flows.json?id={user}-{sign}</code></p>
+			<p>ID функции - <code>flows</code>. Функция возвращает список потоков, созданных веб-мастером. На входе функция получает один параметр: <code>offer</code> - идентификатор оффера, для которого требуется получить список существующих потоков.</p>
+			<p>Результатом выполнения функции является ассоциативный массив со списком потоков:</p>
+			<table class="table table-striped">
+            	<thead><tr>
+					<th>Поле</th>
+					<th>Описание</th>
+            	</tr></thead>
+            	<tbody>
+					<tr>
+                    	<td><code>id</code></td>
+                    	<td>Идентификатор потока в системе</td>
+					</tr>
+					<tr>
+                    	<td><code>offer</code></td>
+                    	<td>ID оффера потока</td>
+					</tr>
+					<tr>
+                    	<td><code>offername</code></td>
+                    	<td>Название оффера потока</td>
+					</tr>
+					<tr>
+                    	<td><code>name</code></td>
+                    	<td>Название потока</td>
+					</tr>
+					<tr>
+                    	<td><code>epc</code></td>
+                    	<td>EPC - Earn Per Click, средний доход за каждый клик</td>
+					</tr>
+					<tr>
+                    	<td><code>cr</code></td>
+                    	<td>Convert Ratio, соотношение уникальных посетителей к количеству успешных заказов</td>
+					</tr>
+					<tr>
+                    	<td><code>total</code></td>
+                    	<td>Общий заработок по потоку</td>
+					</tr>
+            	</tbody>
+			</table>
+
+			<h2 id="flowadd">Создание потока</h2>
+			<p>URL: <code>http://work.cpa/api/wm/add.json?id={user}-{sign}</code></p>
+			<p>ID функции - <code>add</code>. Функция создаёт новый поток по офферу.</p>
+			<p>На входе функция получает следующие параметры:</p>
+			<table class="table table-striped">
+            	<thead><tr>
+					<th>Поле</th>
+					<th>Описание</th>
+            	</tr></thead>
+            	<tbody>
+					<tr>
+                    	<td><code>offer</code></td>
+                    	<td>ID оффера потока (см. <a href="#offers">список офферов</a>)</td>
+					</tr>
+					<tr>
+                    	<td><code>name</code></td>
+                    	<td>Название потока (необязательный параметр)</td>
+					</tr>
+            	</tbody>
+			</table>
+			<p>Результатом выполнения функции является ассоциативный массив:</p>
+			<table class="table table-striped">
+            	<thead><tr>
+					<th>Поле</th>
+					<th>Описание</th>
+            	</tr></thead>
+            	<tbody>
+					<tr>
+                    	<td><code>status</code></td>
+                    	<td>Результат выполнения операции: <code>ok</code> в случае успешного выполнения, <code>error</code> в случае ошибки</td>
+					</tr>
+					<tr>
+                    	<td><code>id</code></td>
+                    	<td>Идентификатор созданного потока</td>
+					</tr>
+					<tr>
+                    	<td><code>error</code></td>
+                    	<td>Идентификатор ошибки: <code>offer-inactive</code> при работе с неактивным оффером, <code>request-error</code> в случае внутренней ошибки системы</td>
+					</tr>
+            	</tbody>
+			</table>
+
+			<h2 id="flowedit">Редактирование потока</h2>
+			<p>URL: <code>http://work.cpa/api/wm/edit.json?id={user}-{sign}</code></p>
+			<p>ID функции - <code>edit</code>. Функция позволяет переименовать поток.</p>
+			<p>На входе функция получает следующие параметры:</p>
+			<table class="table table-striped">
+            	<thead><tr>
+					<th>Поле</th>
+					<th>Описание</th>
+            	</tr></thead>
+            	<tbody>
+					<tr>
+                    	<td><code>flow</code></td>
+                    	<td>ID потока для изменения</td>
+					</tr>
+					<tr>
+                    	<td><code>name</code></td>
+                    	<td>Новое название потока</td>
+					</tr>
+            	</tbody>
+			</table>
+			<p>Результатом выполнения функции является ассоциативный массив:</p>
+			<table class="table table-striped">
+            	<thead><tr>
+					<th>Поле</th>
+					<th>Описание</th>
+            	</tr></thead>
+            	<tbody>
+					<tr>
+                    	<td><code>status</code></td>
+                    	<td>Результат выполнения операции: <code>ok</code> в случае успешного выполнения, <code>error</code> в случае ошибки</td>
+					</tr>
+					<tr>
+                    	<td><code>error</code></td>
+                    	<td>Идентификатор ошибки: <code>access-denied</code> при работе с недоступным потоком, <code>request-error</code> в случае внутренней ошибки системы</td>
+					</tr>
+            	</tbody>
+			</table>
+
+			<h2 id="flowdel">Удаление потока</h2>
+			<p>URL: <code>http://work.cpa/api/wm/del.json?id={user}-{sign}</code></p>
+			<p>ID функции - <code>del</code>. Функция удаляет поток.</p>
+			<div class="well text-danger"><b>Важно!</b> Перед удалением потока убедитесь, что все заказы "В ожидании" по нему выполнены, в противном случае <b>отчисления за заказ начислены не будут</b>!</div>
+			<p>На входе функция получает следующие параметры:</p>
+			<table class="table table-striped">
+            	<thead><tr>
+					<th>Поле</th>
+					<th>Описание</th>
+            	</tr></thead>
+            	<tbody>
+					<tr>
+                    	<td><code>flow</code></td>
+                    	<td>ID потока для удаления</td>
+					</tr>
+            	</tbody>
+			</table>
+			<p>Результатом выполнения функции является ассоциативный массив:</p>
+			<table class="table table-striped">
+            	<thead><tr>
+					<th>Поле</th>
+					<th>Описание</th>
+            	</tr></thead>
+            	<tbody>
+					<tr>
+                    	<td><code>status</code></td>
+                    	<td>Результат выполнения операции: <code>ok</code> в случае успешного выполнения, <code>error</code> в случае ошибки</td>
+					</tr>
+					<tr>
+                    	<td><code>error</code></td>
+                    	<td>Идентификатор ошибки: <code>access-denied</code> при работе с недоступным потоком, <code>request-error</code> в случае внутренней ошибки системы</td>
+					</tr>
+            	</tbody>
+			</table>
+
+			<h2 id="stats">Статистика по датам</h2>
+			<p>URL: <code>http://work.cpa/api/wm/stats.json?id={user}-{sign}</code></p>
+			<p>ID функции - <code>stats</code>. Функция предоставляет статистику по кликам и заказам, разбирую по датам, аналогично разделу «<a href="/stats">Статистика</a>».</p>
+			<p>На входе функция получает следующие параметры:</p>
+			<table class="table table-striped">
+            	<thead><tr>
+					<th>Поле</th>
+					<th>Описание</th>
+            	</tr></thead>
+            	<tbody>
+					<tr>
+                    	<td><code>from</code></td>
+                    	<td>Дата начала статистики в формате <code>ГГГГ-ММ-ДД</code>. Необязательный параметр. По умолчанию используется дата неделю назад.</td>
+					</tr>
+					<tr>
+                    	<td><code>to</code></td>
+                    	<td>Дата окончания статистики в формате <code>ГГГГ-ММ-ДД</code>. Необязательный параметр. По умолчанию используется сегодняшний день.</td>
+					</tr>
+					<tr>
+                    	<td><code>offer</code></td>
+                    	<td>ID оффера для получения статистики. Необязательный параметр. По умолчанию статистика выводится для всех офферов.</td>
+					</tr>
+					<tr>
+                    	<td><code>flow</code></td>
+                    	<td>ID потока для получения статистики. Необязательный параметр. По умолчанию статистика выводится для всех потоков.</td>
+					</tr>
+            	</tbody>
+			</table>
+			<p>Результатом выполнения функции является ассоциативный массив. Идентификатором каждого элемента служит дата статистики в формате <code>ГГГГММДД</code>. Каждый элемент включает в себя следующие поля:</p>
+			<table class="table table-striped">
+            	<thead><tr>
+					<th>Поле</th>
+					<th>Описание</th>
+            	</tr></thead>
+            	<tbody>
+					<tr>
+                    	<td><code>stat_date</code></td>
+                    	<td>Дата статистики в формате <code>ГГГГММДД</code></td>
+					</tr>
+					<tr>
+                    	<td><code>spaces</code></td>
+                    	<td>Количество кликов по прокладкам</td>
+					</tr>
+					<tr>
+                    	<td><code>suni</code></td>
+                    	<td>Количество <b>уникальных</b> кликов по прокладкам</td>
+					</tr>
+					<tr>
+                    	<td><code>clicks</code></td>
+                    	<td>Количество кликов по лэндингам</td>
+					</tr>
+					<tr>
+                    	<td><code>unique</code></td>
+                    	<td>Количество <b>уникальных</b> кликов по лэндингам</td>
+					</tr>
+					<tr>
+                    	<td><code>ca</code></td>
+                    	<td>Количество заказов в статусе «Принят» <small class="text-muted">(count accepted)</small></td>
+					</tr>
+					<tr>
+                    	<td><code>sa</code></td>
+                    	<td>Сумма по лидам в статусе «Принят» <small class="text-muted">(sum accepted)</small></td>
+					</tr>
+					<tr>
+                    	<td><code>cc</code></td>
+                    	<td>Количество заказов в статусе «Отменён» <small class="text-muted">(count canceled)</small></td>
+					</tr>
+					<tr>
+                    	<td><code>sc</code></td>
+                    	<td>Сумма по лидам в статусе «Отменён» <small class="text-muted">(sum canceled)</small></td>
+					</tr>
+					<tr>
+                    	<td><code>cw</code></td>
+                    	<td>Количество заказов в статусе «Ожидает» <small class="text-muted">(count waiting)</small></td>
+					</tr>
+					<tr>
+                    	<td><code>sw</code></td>
+                    	<td>Сумма по лидам в статусе «Ожидает» <small class="text-muted">(sum waiting)</small></td>
+					</tr>
+            	</tbody>
+			</table>
+
+			<h2 id="lead">Статистика по лидам</h2>
+			<p>URL: <code>http://work.cpa/api/wm/lead.json?id={user}-{sign}</code></p>
+			<p>ID функции - <code>lead</code>. Функция предоставляет список лидов за указанную дату и их статус.</p>
+			<table class="table table-striped">
+            	<thead><tr>
+					<th>Поле</th>
+					<th>Описание</th>
+            	</tr></thead>
+            	<tbody>
+					<tr>
+                    	<td><code>day</code></td>
+                    	<td>Дата статистики в формате <code>ГГГГ-ММ-ДД</code>. Необязательный параметр. По умолчанию используется сегодняшний день.</td>
+					</tr>
+					<tr>
+                    	<td><code>offer</code></td>
+                    	<td>ID оффера для получения статистики. Необязательный параметр. По умолчанию статистика выводится для всех офферов.</td>
+					</tr>
+					<tr>
+                    	<td><code>flow</code></td>
+                    	<td>ID потока для получения статистики. Необязательный параметр. По умолчанию статистика выводится для всех потоков.</td>
+					</tr>
+					<tr>
+                    	<td><code>site</code></td>
+                    	<td>Идентификатор сайта-источника. Список сайтов можно получить с помощью функции <a href="#offersite">offersite</a>.</td>
+					</tr>
+					<tr>
+                    	<td><code>status</code></td>
+                    	<td>Статус заказа:
+                    		<ul>
+                    			<li><code>a</code> - принятые лиды</li>
+                    			<li><code>w</code> - лиды в ожидании и на обработке</li>
+                    			<li><code>c</code> - отклонённые лиды</li>
+                    			<li><code>не указан</code> - все лиды</li>
+                    		</ul>
+                    	</td>
+					</tr>
+            	</tbody>
+			</table>
+			<p>Результатом выполнения функции является массив лидов. Каждый элемент включает в себя следующие поля:</p>
+			<table class="table table-striped">
+            	<thead><tr>
+					<th>Поле</th>
+					<th>Описание</th>
+            	</tr></thead>
+            	<tbody>
+					<tr>
+                    	<td><code>time</code></td>
+                    	<td>Время поступления заказа в формате UNIX-timestamp</td>
+					</tr>
+					<tr>
+                    	<td><code>status</code></td>
+                    	<td>Идентификатор статуса заказа
+                    		<ul>
+                    			<li><code>1</code> - новый заказ</li>
+                    			<li><code>2</code> - заказ в обработке</li>
+                    			<li><code>3</code> - перезвонить</li>
+                    			<li><code>4</code> - недозвон</li>
+                    			<li><code>5</code> - заказ отменён</li>
+                    			<li><code>10</code> - заказ принят</li>
+                    			<li><code>12</code> - заказ удалён</li>
+                    		</ul>
+                    	</td>
+					</tr>
+					<tr>
+                    	<td><code>status_text</code></td>
+                    	<td>Текстовое значение статуса</td>
+					</tr>
+					<tr>
+                    	<td><code>reason</code></td>
+                    	<td>Идентификатор причины отказа
+                    		<ul>
+								<li><code>1</code> - Некорректный номер</li>
+								<li><code>2</code> - Передумал</li>
+								<li><code>3</code> - Не заказывал</li>
+								<li><code>4</code> - Требует сертификат</li>
+								<li><code>5</code> - Доставка невозможна</li>
+								<li><code>6</code> - Клиент не заберёт заказ</li>
+								<li><code>7</code> - Дублированный заказ</li>
+								<li><code>8</code> - Другое</li>
+                    		</ul>
+                    	</td>
+					</tr>
+					<tr>
+                    	<td><code>reason_text</code></td>
+                    	<td>Текстовое значение причины отказа</td>
+					</tr>
+					<tr>
+                    	<td><code>offer</code></td>
+                    	<td>Идентификатор оффера</td>
+					</tr>
+					<tr>
+                    	<td><code>offer_name</code></td>
+                    	<td>Название оффера</td>
+					</tr>
+					<tr>
+                    	<td><code>flow</code></td>
+                    	<td>Идентификатор потока</td>
+					</tr>
+					<tr>
+                    	<td><code>site</code></td>
+                    	<td>Идентификатор лэндинга</td>
+					</tr>
+					<tr>
+                    	<td><code>site_url</code></td>
+                    	<td>URL лэндинга</td>
+					</tr>
+					<tr>
+                    	<td><code>space</code></td>
+                    	<td>Идентификатор прокладки</td>
+					</tr>
+					<tr>
+                    	<td><code>space_url</code></td>
+                    	<td>URL прокладки</td>
+					</tr>
+					<tr>
+                    	<td><code>ip</code></td>
+                    	<td>IP-адрес заказчика</td>
+					</tr>
+					<tr>
+                    	<td><code>utm_id</code></td>
+                    	<td>Идентификатор рекламной сети:
+                    		<ul>
+                    			<li><code>1</code> - MarketGid</li>
+                    			<li><code>2</code> - DirectAdvert</li>
+                    			<li><code>3</code> - AdvertLink</li>
+                    		</ul>
+                    	</td>
+					</tr>
+					<tr>
+                    	<td><code>utm_content</code></td>
+                    	<td>Идентификатор объявления в рекламной сети</td>
+					</tr>
+					<tr>
+                    	<td><code>utm_source</code></td>
+                    	<td>Идентификатор площадки в рекламной сети (только MarketGid)</td>
+					</tr>
+            	</tbody>
+			</table>
+
+			<h2 id="sources">Статистика по источникам</h2>
+			<p>URL: <code>http://work.cpa/api/wm/sources.json?id={user}-{sign}</code></p>
+			<p>ID функции - <code>sources</code>. Функция предоставляет расширенную статистику по источникам поступления трафика.</p>
+			<p>На входе функция получает следующие параметры:</p>
+			<table class="table table-striped">
+            	<thead><tr>
+					<th>Поле</th>
+					<th>Описание</th>
+            	</tr></thead>
+            	<tbody>
+					<tr>
+                    	<td><code>from</code></td>
+                    	<td>Дата начала статистики в формате <code>ГГГГ-ММ-ДД</code>. Необязательный параметр. По умолчанию используется дата две недели назад.</td>
+					</tr>
+					<tr>
+                    	<td><code>to</code></td>
+                    	<td>Дата окончания статистики в формате <code>ГГГГ-ММ-ДД</code>. Необязательный параметр. По умолчанию используется сегодняшний день.</td>
+					</tr>
+					<tr>
+                    	<td><code>offer</code></td>
+                    	<td>ID оффера для получения статистики. Необязательный параметр. По умолчанию статистика выводится для всех офферов.</td>
+					</tr>
+					<tr>
+                    	<td><code>flow</code></td>
+                    	<td>ID потока для получения статистики. Необязательный параметр. По умолчанию статистика выводится для всех потоков.</td>
+					</tr>
+					<tr>
+                    	<td><code>group</code></td>
+                    	<td>Тип группировки статистики: <code>0</code> - статистика по баннерам, <code>1</code> - статистика по площадкам. Необязательный параметр. По умолчанию группировка производится по баннерам.</td>
+					</tr>
+					<tr>
+                    	<td><code>cutoff</code></td>
+                    	<td>Минимальное количество кликов для вывода статистики. Баннеры или площадки с меньшим количеством кликов показываться в статистике не будут. Необязательный параметр. По умолчанию используется значение 10 кликов.</td>
+					</tr>
+					<tr>
+                    	<td><code>network</code></td>
+                    	<td>Идентификатор рекламной сети:
+                    		<ul>
+                    			<li><code>1</code> - MarketGid</li>
+                    			<li><code>2</code> - DirectAdvert</li>
+                    			<li><code>3</code> - AdvertLink</li>
+                    			<li><code>0</code> или не указан - все рекламные сети</li>
+                    		</ul>
+                    	</td>
+					</tr>
+					<tr>
+                    	<td><code>filter</code></td>
+                    	<td>Только для MarketGid. Фильтрация статистики по выбранному баннеру или площадке. Для статистики по баннерам - ID площадки, для статистики по площадкам - ID баннера. Позволяет просматривать отдельную статистику для каждого баннера или площадки.</td>
+					</tr>
+            	</tbody>
+			</table>
+			<p>Результатом выполнения функции является ассоциативный массив. Идентификатор каждого элемента указывается в формате <code>IDсети:IDисточника</code>. Каждый элемент включает в себя следующие поля:</p>
+			<table class="table table-striped">
+            	<thead><tr>
+					<th>Поле</th>
+					<th>Описание</th>
+            	</tr></thead>
+            	<tbody>
+					<tr>
+                    	<td><code>network</code></td>
+                    	<td>Идентификатор рекламной сети:
+                    		<ul>
+                    			<li><code>1</code> - MarketGid</li>
+                    			<li><code>2</code> - DirectAdvert</li>
+                    			<li><code>3</code> - AdvertLink</li>
+                    		</ul>
+                    	</td>
+					</tr>
+					<tr>
+                    	<td><code>source</code></td>
+                    	<td>Идентификатор источника (баннера или площадки) в данной рекламной сети</td>
+					</tr>
+					<tr>
+                    	<td><code>spaces</code></td>
+                    	<td>Количество кликов по прокладкам</td>
+					</tr>
+					<tr>
+                    	<td><code>suni</code></td>
+                    	<td>Количество <b>уникальных</b> кликов по прокладкам</td>
+					</tr>
+					<tr>
+                    	<td><code>clicks</code></td>
+                    	<td>Количество кликов по лэндингам</td>
+					</tr>
+					<tr>
+                    	<td><code>unique</code></td>
+                    	<td>Количество <b>уникальных</b> кликов по лэндингам</td>
+					</tr>
+					<tr>
+                    	<td><code>ct</code></td>
+                    	<td>Общее количество заказов <small class="text-muted">(count total)</small></td>
+					</tr>
+					<tr>
+                    	<td><code>ca</code></td>
+                    	<td>Количество заказов в статусе «Принят» <small class="text-muted">(count accepted)</small></td>
+					</tr>
+					<tr>
+                    	<td><code>cc</code></td>
+                    	<td>Количество заказов в статусе «Отменён» <small class="text-muted">(count canceled)</small></td>
+					</tr>
+					<tr>
+                    	<td><code>cw</code></td>
+                    	<td>Количество заказов в статусе «Ожидает» <small class="text-muted">(count waiting)</small></td>
+					</tr>
+            	</tbody>
+			</table>
+
+		</div>
+
+		<div class="bs-docs-section">
+			<div class="page-header"><h1 id="sale">Поставщик</h1></div>
+			<p>API-интерфейс поставщика позволяет произвести интеграцию вашего собственного интерфейса с нашей системой обработки заказов. Для работы со всеми функциями необходимо обращаться к приложению <code>sale</code>.</p>
+			<p>URL: <code>http://work.cpa/api/sale/{function}.json?id={user}-{sign}</code></p>
+
+			<h2 id="orderlist">Список заказов</h2>
+			<p>URL: <code>http://work.cpa/api/sale/list.json?id={user}-{sign}</code></p>
+			<p>ID функции - <code>list</code>. Функция позволяет получить список заказов. Параметры отбора могут передаваться в GET или POST-запросе.</p>
+			<p>На входе функция может использовать следующие параметры для отбора заказов:</p>
+			<table class="table table-striped">
+            	<thead><tr>
+					<th>Поле</th>
+					<th>Описание</th>
+            	</tr></thead>
+            	<tbody>
+					<tr>
+                    	<td><code>oid</code></td>
+                    	<td>Внутренний идентификатор заказа MyCPA или список идентификаторов через запятую</td>
+					</tr>
+					<tr>
+                    	<td><code>ids[]</code></td>
+                    	<td>Массив внутренних идентификатор заказа MyCPA.</td>
+					</tr>
+					<tr>
+                    	<td><code>eid</code></td>
+                    	<td>Внешний идентификатор заказа в интерфейсе поставщика или список идентификаторов через запятую</td>
+					</tr>
+					<tr>
+                    	<td><code>eids[]</code></td>
+                    	<td>Массив внешних идентификатор заказа из интерфейса поставщика.</td>
+					</tr>
+					<tr>
+                    	<td><code>status</code></td>
+                    	<td>Статус заказа. Кроме основных статусов (см. поле <code>status</code> в таблице ниже) может получать дополнительные значения:
+							<ul>
+                    			<li><code>-1</code> - Заказы без отказов</li>
+	  							<li><code>-2</code> - Заказы в обработке</li>
+	  							<li><code>-3</code> - Подтверждённые заказы</li>
+	  						</tr>
+                    	</td>
+					</tr>
+					<tr>
+                    	<td><code>from</code><br /><code>to</code></td>
+                    	<td>Отбор заказов по времени с <code>from</code> до <code>to</code>. Время указывается в формате UNIX-timestamp. Могут использоватья как оба параметра одновременно, так и один из параметров по отдельности. Полезно для формирования выгрузки заказов в свой интерфейс, но для этой задачи рекомендуется использовать поле ниже.</td>
+					</tr>
+					<tr>
+                    	<td><code>after</code></td>
+                    	<td>Идентификатор последнего полученного заказа, после которого начинать выдачу. Полезно для выгрузки заказов в свой интерфейс - список заказов запрашивается каждый раз с указанием ID последнего полученного заказа, и в результате выводятся только новые заказы, пришедшие после указанного.</td>
+					</tr>
+				</tbody>
+			</table>
+			<p>Результатом выполнения функции является массив элементов со следующими полями:</p>
+			<table class="table table-striped">
+            	<thead><tr>
+					<th>Поле</th>
+					<th>Описание</th>
+            	</tr></thead>
+            	<tbody>
+					<tr>
+                    	<td><code>id</code></td>
+                    	<td>Идентификатор заказа в рамках MyCPA</td>
+					</tr>
+					<tr>
+                    	<td><code>ext</code></td>
+                    	<td>Внешний идентификатор заказа (в случае интеграции интерфейсов)</td>
+					</tr>
+					<tr>
+                    	<td><code>offer</code></td>
+                    	<td>Идентификатор оффера (см. <a href="#offers">список</a>)</td>
+					</tr>
+					<tr>
+                    	<td><code>wm</code></td>
+                    	<td>Идентификатор вебмастера</td>
+					</tr>
+					<tr>
+                    	<td><code>status</code></td>
+                    	<td>Текущий статус заказа. Принимает одно из следующих значений:
+							<ul>
+                    			<li><code>1</code> - Новый заказ</li>
+	  							<li><code>2</code> - В обработке</li>
+	  							<li><code>3</code> - Перезвонить</li>
+	  							<li><code>4</code> - Недозвон</li>
+	  							<li><code>5</code> - Отменён</li>
+	  							<li><code>6</code> - На упаковке</li>
+	  							<li><code>7</code> - Отправка</li>
+	  							<li><code>8</code> - В пути</li>
+	  							<li><code>9</code> - Доставлен</li>
+	  							<li><code>10</code> - Оплачен</li>
+	  							<li><code>11</code> - Возврат</li>
+	  							<li><code>12</code> - Удалён за фрод</li>
+                    		</ul>
+                    	</td>
+					</tr>
+					<tr>
+                    	<td><code>reason</code></td>
+                    	<td>Код причины отказа. Принимает одно из следующих значений:
+							<ul>
+                    			<li><code>1</code> - Некорректный номер</li>
+								<li><code>2</code> - Передумал</li>
+								<li><code>3</code> - Не заказывал</li>
+								<li><code>4</code> - Требует сертификат</li>
+								<li><code>5</code> - Доставка невозможна</li>
+								<li><code>6</code> - Фэйк (ложные данные)</li>
+								<li><code>7</code> - Дублированный заказ</li>
+								<li><code>8</code> - Заказал в другом месте</li>
+                    		</ul>
+                    	</td>
+					</tr>
+					<tr>
+                    	<td><code>check</code></td>
+                    	<td>Флаг постановки заказа на проверку службой безопасности. <code>1</code> - заказ подозрительный и находится на проверке.</td>
+					</tr>
+					<tr>
+                    	<td><code>calls</code></td>
+                    	<td>Количество прозвонов по данному офферу</td>
+					</tr>
+					<tr>
+                    	<td><code>site</code></td>
+                    	<td>Адрес сайта, с которого был выполнен заказ</td>
+					</tr>
+					<tr>
+                    	<td><code>ip</code></td>
+                    	<td>IP-адрес заказчика</td>
+					</tr>
+					<tr>
+                    	<td><code>time</code></td>
+                    	<td>Время получения заказа в формате UNIX-timestamp</td>
+					</tr>
+					<tr>
+                    	<td><code>name</code></td>
+                    	<td>ФИО заказчика</td>
+					</tr>
+					<tr>
+                    	<td><code>gender</code></td>
+                    	<td>Пол заказчика. 1 - мужчина, 2 - женщина. Определяется автоматически.</td>
+					</tr>
+					<tr>
+                    	<td><code>phone</code></td>
+                    	<td>Телефон заказчика в формате 79876543210 </td>
+					</tr>
+					<tr>
+                    	<td><code>country</code></td>
+                    	<td>Двухбуквенный код страны заказчика, вычисляется на основании IP-адреса</td>
+					</tr>
+					<tr>
+                    	<td><code>index</code></td>
+                    	<td>Почтовый индекс адреса доставки в формате 127000</td>
+					</tr>
+					<tr>
+                    	<td><code>addr</code></td>
+                    	<td>Адрес доставки. Может содержать в себе полный адрес без индекса, если не используются поля ниже. В противном случае содержит только номер дома, корпуса, квартиры или офиса.</td>
+					</tr>
+					<tr>
+                    	<td><code>area</code></td>
+                    	<td>Регион доставки, например, Московская обл.</td>
+					</tr>
+					<tr>
+                    	<td><code>city</code></td>
+                    	<td>Город доставки, например Москва</td>
+					</tr>
+					<tr>
+                    	<td><code>street</code></td>
+                    	<td>Улица по адресу доставки, например ул. Мира</td>
+					</tr>
+					<tr>
+                    	<td><code>count</code></td>
+                    	<td>Количество товара.</td>
+					</tr>
+					<tr>
+                    	<td><code>items</code></td>
+                    	<td>Состав заказа, количество тех или иных вариантов товара. Массив, в котором ключ - идентификатор варианта, значение - количество товара данного вида.</td>
+					</tr>
+					<tr>
+                    	<td><code>delivery</code></td>
+                    	<td>Используемая служба доставки:
+							<ul>
+                    			<li><code>1</code> - Почта России</li>
+								<li><code>2</code> - СПСР-экспресс</li>
+							</ul>
+                    	</td>
+					</tr>
+					<tr>
+                    	<td><code>discount</code></td>
+                    	<td>Скидка на товар в процентах.</td>
+					</tr>
+					<tr>
+                    	<td><code>more</code></td>
+                    	<td>Сумма добавочной стоимости заказа, например, наценки за экспресс-доставку.</td>
+					</tr>
+					<tr>
+                    	<td><code>price</code></td>
+                    	<td>Общая стоимость заказа.</td>
+					</tr>
+					<tr>
+                    	<td><code>comment</code></td>
+                    	<td>Дополнительный комментарий по заказу.</td>
+					</tr>
+            	</tbody>
+			</table>
+
+			<h2 id="orderedit">Редактирование заказа</h2>
+			<p>URL: <code>http://work.cpa/api/sale/edit.json?id={user}-{sign}</code></p>
+			<p>ID функции - <code>edit</code>. Функция позволяет отредактировать поля существующего заказа, обновить его статус. Часть параметров может передаваться в GET-части запроса.</p>
+			<p>На входе функция получает следующие параметры:</p>
+			<table class="table table-striped">
+            	<thead><tr>
+					<th>Поле</th>
+					<th>Описание</th>
+            	</tr></thead>
+            	<tbody>
+					<tr>
+                    	<td><code>oid</code> <br /> <code>eid</code></td>
+                    	<td>Идентификатор заказа, над которым ведётся работа. Поле <code>oid</code> используется для указания внутреннего идентификатора заказа в рамках MyCPA, поле <code>eid</code> используется для работы с идентификатором заказа на стороне поставщика. Обязательное поле запроса. Может передаваться в GET.</td>
+					</tr>
+					<tr>
+                    	<td><code>accept</code></td>
+                    	<td>Флаг приёма заказа. Устанавливается в 1 если заказ в данный момент одобряется на стороне поставщика. Может передаваться в GET.</td>
+					</tr>
+					<tr>
+                    	<td><code>status</code></td>
+                    	<td>Идентификатор нового статуса заказа. Может передаваться в GET. Принимает одно из следующих значений:
+							<ul>
+                    			<li><code>1</code> - Новый заказ</li>
+	  							<li><code>2</code> - В обработке</li>
+	  							<li><code>3</code> - Перезвонить</li>
+	  							<li><code>4</code> - Недозвон</li>
+	  							<li><code>5</code> - Отменён</li>
+	  							<li><code>6</code> - На упаковке</li>
+	  							<li><code>7</code> - Отправка</li>
+	  							<li><code>8</code> - В пути</li>
+	  							<li><code>9</code> - Доставлен</li>
+	  							<li><code>10</code> - Оплачен</li>
+	  							<li><code>11</code> - Возврат</li>
+	  							<li><code>12</code> - Удалён за фрод</li>
+                    		</ul>
+							Для отмены заказа передайте статус 5 и поле <code>reason</code>. <br />
+							<span class="text-danger"><b>Важно!</b> Для подтверждения заказа используйте поле <code>accept=1</code>, а не смену статуса заказа!</span>
+                    	</td>
+					</tr>
+					<tr>
+                    	<td><code>reason</code></td>
+                    	<td>Код причины отказа, обязателен для указания при установке статуса <code>status=5</code>. Может передаваться в GET. Принимает одно из следующих значений:
+							<ul>
+                    			<li><code>1</code> - Некорректный номер</li>
+								<li><code>2</code> - Передумал</li>
+								<li><code>3</code> - Не заказывал</li>
+								<li><code>4</code> - Требует сертификат</li>
+								<li><code>5</code> - Доставка невозможна</li>
+								<li><code>6</code> - Фэйк (ложные данные)</li>
+								<li><code>7</code> - Дублированный заказ</li>
+								<li><code>8</code> - Заказал в другом месте</li>
+                    		</ul>
+                    	</td>
+					</tr>
+					<tr>
+                    	<td><code>check</code></td>
+                    	<td>Флаг постановки заказа на проверку службой безопасности. <code>1</code> - отправить на проверку, <code>0</code> - снять с проверки. Может передаваться в GET.</td>
+					</tr>
+					<tr>
+                    	<td><code>track</code></td>
+                    	<td>Трек-код отправленной посылки. Может передаваться в GET.</td>
+					</tr>
+					<tr>
+                    	<td><code>calls</code></td>
+                    	<td>Увеличить количество выполненных звонков по данному заказу. <b class="text-warning">Важно!</b> В данном поле указывается не общее количество звонков, а только его прирост. Это значит, что если со времени последнего обновления количества звонков был сделан один звонок по заказу, здесь должно быть указано 1.</td>
+					</tr>
+					<tr>
+                    	<td><code>name</code></td>
+                    	<td>ФИО заказчика</td>
+					</tr>
+					<tr>
+                    	<td><code>phone</code></td>
+                    	<td>Телефон заказчика в формате 79876543210 (только цифры)</td>
+					</tr>
+					<tr>
+                    	<td><code>index</code></td>
+                    	<td>Почтовый индекс адреса доставки в формате 127000 (только цифры)</td>
+					</tr>
+					<tr>
+                    	<td><code>addr</code></td>
+                    	<td>Адрес доставки. Может содержать в себе полный адрес без индекса, если не используются поля ниже. В противном случае должен содержать только номер дома, корпуса, квартиры или офиса.</td>
+					</tr>
+					<tr>
+                    	<td><code>area</code></td>
+                    	<td>Регион доставки, например, Московская обл.</td>
+					</tr>
+					<tr>
+                    	<td><code>city</code></td>
+                    	<td>Город доставки, например Москва</td>
+					</tr>
+					<tr>
+                    	<td><code>street</code></td>
+                    	<td>Улица по адресу доставки, например ул. Мира</td>
+					</tr>
+					<tr>
+                    	<td><code>delivery</code></td>
+                    	<td>Используемая служба доставки:
+							<ul>
+                    			<li><code>1</code> - Почта России</li>
+								<li><code>2</code> - СПСР-экспресс</li>
+							</ul>
+                    	</td>
+					</tr>
+					<tr>
+                    	<td><code>discount</code></td>
+                    	<td>Скидка на товар в процентах. Целое число от 0 до 99.</td>
+					</tr>
+					<tr>
+                    	<td><code>count</code></td>
+                    	<td>Количество товара, используется для товаров без дополнительных вариантов оформления, размера, цвета и пр.</td>
+					</tr>
+					<tr>
+                    	<td><code>items</code></td>
+                    	<td>Состав заказа, количество тех или иных вариантов товара. Принимает на входе массив, в котором ключ - идентификатор варианта, значение - количество товара данного вида. Идентификаторы вариантов для своего товара уточните у администрации во время настройки интеграции. В случае указания поля <code>items</code>, передавать <code>count</code> не нужно.</td>
+					</tr>
+					<tr>
+                    	<td><code>more</code></td>
+                    	<td>Сумма добавочной стоимости заказа, например, наценки за экспресс-доставку. Прибавляется к основной сумме заказа после учёта всех скидок.</td>
+					</tr>
+					<tr>
+                    	<td><code>comment</code></td>
+                    	<td>Дополнительный комментарий по заказу.</td>
+					</tr>
+            	</tbody>
+			</table>
+			<p>Обязательным является только поле идентификатора заказа, остальные поля используются по мере надобности. Результатом выполнения функции является ассоциативный массив:</p>
+			<table class="table table-striped">
+            	<thead><tr>
+					<th>Поле</th>
+					<th>Описание</th>
+            	</tr></thead>
+            	<tbody>
+					<tr>
+                    	<td><code>status</code></td>
+                    	<td>Результат выполнения операции: <code>ok</code> в случае успешного выполнения, <code>error</code> в случае ошибки</td>
+					</tr>
+					<tr>
+                    	<td><code>error</code></td>
+                    	<td>Идентификатор ошибки: <code>orderid</code> при отсутствии идентификатора заказа, <code>edit</code> в случае отсутствия полей для обновления (например, если информация не изменялась), <code>access-denied</code> при работе с недоступным заказом, <code>request-error</code> в случае внутренней ошибки системы.</td>
+					</tr>
+            	</tbody>
+			</table>
+
+		</div>
+
+    </div>
+
+</div></div>
+
+</div>
+</body>
+</html>

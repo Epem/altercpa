@@ -1,0 +1,60 @@
+html, body { padding: 0; margin: 0; height: 100%; width: 100%; }
+body { background: #000; height: 100%; padding: 0; margin: 0; font: normal 12px Verdana, Tahoma, sans-serif; }
+
+a:link,a:active,a:visited	{ color: #2f535c; text-decoration: underline; }
+a:hover						{ text-decoration: underline; color: #000;}
+
+#container {
+    text-align: center; height: 100%;
+    white-space: nowrap;
+}
+
+#container::after {
+    display: inline-block;
+    vertical-align: middle;
+    width: 0;
+    height: 100%;
+    content: '';
+}
+
+#form {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#form section {
+    margin: 50px;
+    padding: 190px 20px 10px 20px;
+    min-width: 300px;
+    max-width: 350px;
+    white-space: normal;
+    background: #fff url('images/logo-index.png') center 30px no-repeat;
+    background-color: rgba( 255, 255, 255, 0.8 );
+    color: #000;
+}
+
+section p { display: block; text-align: center; font-size: 12px; margin: 5px; padding: 3px; }
+
+.head {	display: block; margin: 0 0 20px 0;
+	color: #444; font-size: 22px; text-align: center;
+}
+
+.error {
+	display: block; margin: 0 0 1px 0; padding: 8px;
+	color: #722; font-size: 11px; text-align: center;
+	background: #fdd;
+}
+
+.input {
+	color: #222; padding: 8px 8px 8px 30px; font-size: 18px; width: 260px; margin: 5px auto;
+	border: solid 1px #ccc; border-bottom-color: #999; border-right-color: #999;
+	background: #fff url('images/name.png') 9px center no-repeat;
+}
+.input.email { background-image: url('images/email.png'); }
+.input.pass { background-image: url('images/pass.png'); }
+.input.bad { border-color: #d44; }
+
+.submit {
+	font-size: 16px; padding: 9px 0; width: 300px; border: solid 1px #ccc; border-bottom-color: #777; border-right-color: #777;
+	background: #eee url('images/button.png') top left repeat-x; color: #333; margin: 5px auto;
+}

@@ -1,0 +1,46 @@
+body {
+	font: normal 12px Verdana, Tahoma, sans-serif; padding: 15px; margin: 0; background: #f1f1f1;
+}
+
+.rur	{ padding: 1px 16px 0px 0; background: transparent url('rub.png') right top no-repeat; }
+.fat				{ font-weight: bold; }
+.red,	a.red		{ color: #822; }
+.green, a.green		{ color: #282; }
+.blue,	a.blue		{ color: #228; }
+.yellow,a.yellow	{ color: #882; }
+.grey,	a.grey		{ color: #777; }
+.small { font-size: 11px; }
+.xsmall { font-size: 10px; }
+
+#container { max-width: 1400px; margin: 0 auto; }
+
+#done { padding: 30px 0; text-align: center; }
+#done h1 { font: normal 34px OpenSans, Segoe UI, Tahoma, sans-serif; padding: 0; margin: 0 0 20px 0; color: #292; }
+#done h2 { font: normal 20px OpenSans, Segoe UI, Tahoma, sans-serif; padding: 0; margin: 0 0 20px 0; color: #111; }
+#done p { font: normal 17px OpenSans, Segoe UI, Tahoma, sans-serif; padding: 10px 0; margin: 0; color: #282; }
+
+#offers { text-align: center; }
+a.imga { display: block; margin: 0; padding: 0; line-height: 0; }
+.the-offer { display: inline-block; text-align: left; width: 320px; background: #fff; box-shadow: 0 0 3px rgba(0,0,0,0.3); margin: 12px 9px; padding: 0; }
+.offer-image { max-width: 100%; height: auto; margin: 0; padding: 0; }
+.offer-name, .offer-info, .offer-pay, .offer-descr, .offer-ref { padding: 10px 10px; border-top: solid 1px #ddd; }
+.offer-name { font-size: 18px; }
+.offer-name a { text-decoration: none; color: #111; }
+.offer-name span { float: right; margin-top: 4px; font-size: 12px; }
+.offer-descr { background: #fafafa; font-size: 10px; }
+.offer-info { font-size: 11px; color: #555; }
+.offer-gender { float: right; }
+.offer-wmi { padding: 3px 0px 3px 17px; font-size: 10px; color: #444; }
+a.offer-add { display: block; padding: 10px; text-align: center; text-decoration: none; background: #595; border-top: solid 5px #272; color: #fff; font-size: 18px; }
+a.offer-add:hover { background: #474; border-color: #151; }
+a.offer-add span { display: block; padding-top: 3px; font-size: 10px; color: #eee; }
+
+@media (max-width: 420px) {
+	#done { padding: 15px 0; }
+	#done h1 { font-size: 24px; }
+	#done h2 { font-size: 15px; }
+	#done p { font-size: 13px; }
+	.the-offer { width: auto; float: none; }
+	.offer-name { font-size: 16px; }
+	a.offer-add { font-size: 16px; }
+}
