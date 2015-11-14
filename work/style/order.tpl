@@ -119,6 +119,7 @@
 <!-- END form -->
 
 <table class="form">
+<!-- ToDo: return OpenFraud project back alive
 	<tr>
 		<td class="form-label">
 			<span class="openfraudicon">OpenFraud</span><br />
@@ -135,6 +136,7 @@
 <!-- END ofw -->
 		</td>
 	</tr>
+-->
 <!-- BEGIN file -->
 	<tr>
 		<td class="form-label">Файл</td>
@@ -457,6 +459,7 @@ function checkphone( ph ) {	$("#phoneinfo").load( '{u_phone}' + ph );
 }
 
 // OpenFraud
+/* ToDo: OpenFraud will return
 function openfraud_check ( type, value ) {
 	$.ajax( "{ofc}?type="+type+"&value="+value, {
 		dataType:	"json",
@@ -479,5 +482,6 @@ function openfraud_info ( type, value ) {
 	}); return false;
 
 }
+*/
 
 </script>
