@@ -107,6 +107,9 @@ define( 'PATH_NEWS',	'/data/news/%s' );
 // Support notification email
 define( 'SUPPORT_NOTIFY',	'support@work.cpa' );
 
+// Disqus short name
+define( 'DISQUS', 'workcpa' );
+
 // Dates
 date_default_timezone_set( 'Etc/GMT-3' );
 

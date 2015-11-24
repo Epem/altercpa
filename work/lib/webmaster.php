@@ -1214,6 +1214,7 @@ function webmaster_module ( $core ) {
 			'flow_sub'	=> $core->text->lines( $core->lang['flow_sub'] ),
 			'flow_ajax'	=> $core->url( 'a', 'flow-ajax', 0 ),
 			'flow_tgt'	=> $core->url( 'a', 'flow-target', 0 ),
+			'flow_rd'	=> BASEURL,
 
 			'u_stats'	=> $core->url( 'm', 'stats' ),
 			'u_flowstat'=> $core->url( 'm', 'flowstat' ),

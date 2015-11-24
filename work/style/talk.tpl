@@ -4,9 +4,9 @@
 
 	<div id="disqus_thread"></div>
     <script type="text/javascript">
-        var disqus_shortname = '27cm';
-        var disqus_identifier = 'news27cm{id}';
-        var disqus_url = 'http://27cm.ru{url}';
+        var disqus_shortname = '{disqus}';
+        var disqus_identifier = 'news{disqus}{id}';
+        var disqus_url = '{base}{url}';
         var disqus_title = '{title}';
         (function() {
             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

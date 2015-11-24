@@ -171,6 +171,8 @@ function base_module ( $core ) {
 				'group'		=> $core->lang['news_groups'][$n['news_group']],
 				'type'		=> $n['news_group'],
 				'date'		=> smartdate( $n['news_time'] ),
+				'disqus'	=> DISQUS,
+				'base'		=> rtrim( BASEURL, '/' ),
 			));
 			$core->tpl->output( 'body' );
 
@@ -209,6 +211,7 @@ function base_module ( $core ) {
 			'shown'			=> sprintf( $core->lang['shown'], $st+1, min( $st+$sh, $nc ), $nc ),
 			'edit'			=> $core->lang['edit'],
 			'del'			=> $core->lang['del'],
+			'disqus'		=> DISQUS,
 	    ));
 
 		if ( $core->user->level ) $core->tpl->block( 'body', 'add' );

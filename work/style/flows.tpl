@@ -80,7 +80,7 @@
 			<tr>
 				<td class="olt-label">Редирект</td>
 				<td class="olt-field"><select id="offer{offer.id}redmn" onchange="makelink({offer.id});">
-					<option value="0">&mdash; стандартный домен re.27cm.ru &mdash; </option>
+					<option value="0">&mdash; стандартный домен сети &mdash; </option>
 					<!-- BEGIN s -->
 					<option value="{offer.redmn.s.url}">{offer.redmn.s.url}</option>
 					<!-- END s -->
@@ -208,7 +208,7 @@
 		        	var epc = $("#offer"+offer+"land"+landi).attr( "data-epc" );
 				}
 				if ( usecb ) url += "&cb";
-			} else url = "http://to.27cm.ru/go"+flow;
+			} else url = "{flow_rd}go"+flow;
 		} else url = "http://"+redmn+"/go"+flow;
 
 		if ( typeof(targt) != "undefined" && targt != "" && targt != "0" ) {
