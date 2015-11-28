@@ -300,10 +300,6 @@ a.checkprogress { color: #777; background-image: url('images/wait.png'); }
 .small { font-size: 11px; }
 .xsmall { font-size: 10px; }
 
-#header .red		{ color: #faa; }
-#header .green		{ color: #afa; }
-#header .grey		{ color: #ccc; }
-
 /* Post Editor */
 
 .post-table {
