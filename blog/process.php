@@ -30,9 +30,9 @@
 *******************************************************************************/
 
 // Configuration
-$blog = 'http://blog.cpa';
-$oid = 32;	// Offer ID
-$cid = 16;	// Company ID
+$blog = 'blog.easycpa.biz';
+$oid = 2;	// Offer ID
+$cid = 1;	// Company ID
 $links = '<? footer(); ?>'; // Footer includes
 // DO NOT EDIT BELOW THIS LINE
 

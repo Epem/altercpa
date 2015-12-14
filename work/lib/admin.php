@@ -210,7 +210,10 @@ function admin_action ( $core ) {
 			'offer_payment'		=> (int) $core->post['payment'],
 		);
 
-	    if ( $core->db->edit( DB_OFFER, $data, "offer_id = '$id'" ) ) {			if ( $core->files['image'] ) move_uploaded_file( $core->files['image']['tmp_name'], sprintf( OFFER_FILE, $id ) );
+	    if ( $core->db->edit( DB_OFFER, $data, "offer_id = '$id'" ) ) {			if ( $core->files['image'] ) {
+				$ii = getimagesize( $core->files['image']['tmp_name'] );
+				if ( $ii[2] == IMG_JPG ) move_uploaded_file( $core->files['image']['tmp_name'], sprintf( OFFER_FILE, $id ) );
+			}
 			$core->wmsale->clear( 'offer', $id );
 			$core->wmsale->clear( 'ofp', $id );
 			$core->wmsale->clear( 'offers' );
