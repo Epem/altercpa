@@ -156,9 +156,9 @@ class sql_db {
 	public function data ( $sql ) {
 
 	    if ( $result = $this->query( $sql, true ) ) {
-//			$ret = array();
-//			while ( $r = mysqli_fetch_assoc ( $result ) ) $ret[] = $r;
-			$ret = mysqli_fetch_all ( $result, MYSQLI_ASSOC );
+			if (!function_exists( 'mysqli_fetch_all' )) {				$ret = array();
+				while ( $r = mysqli_fetch_assoc ( $result ) ) $ret[] = $r;
+			} else $ret = mysqli_fetch_all ( $result, MYSQLI_ASSOC );
 			@mysqli_free_result( $result );
 	        return $ret;
 	    } else return false;

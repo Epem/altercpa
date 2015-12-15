@@ -64,7 +64,7 @@ function api ( $core, $app, $func, $type, $id ) {
 	switch ( $type ) {		case 'text':	echo http_build_query( $result );	break;
 		case 'raw':		echo $result;						break;
 		case 'xml':		echo array2xml( $result, $func );	break;
-		case 'json':	echo json_encode( $result, JSON_UNESCAPED_UNICODE ); break;
+		case 'json':	echo defined('JSON_UNESCAPED_UNICODE') ? json_encode( $result, JSON_UNESCAPED_UNICODE ) : json_encode( $result ); break;
 		default:		echo serialize( $result );
 	}
 
