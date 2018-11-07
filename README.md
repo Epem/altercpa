@@ -1,7 +1,7 @@
 # AlterVision CPA Platform
 
-Buy or download it on <https://www.altercpa.pro/en>
-Скачать или купить на <https://www.altercpa.pro/ru>
+* Buy or download it on <https://www.altercpa.pro/en>
+* Скачать или купить на <https://www.altercpa.pro/ru>
 
 ### Powerful affiliate network platform for all-purpose CPA-networks.
 
