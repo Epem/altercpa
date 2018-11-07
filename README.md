@@ -1,16 +1,19 @@
 # AlterVision CPA Platform
 
-#### Powerful affiliate network platform for all-purpose CPA-networks.
+Buy or download it on <https://www.altercpa.pro/en>
+Скачать или купить на <https://www.altercpa.pro/ru>
+
+### Powerful affiliate network platform for all-purpose CPA-networks.
 
 AlterCPA script allows you to deploy your affiliate network quickly, simply and professionally. You will get advanced statistics and analytics of advertising campaigns for webmasters, internal call center for suppliers, analysis of calls and sales, integration with other affilate networks.
 
-Please refer to our quick start guide to make your CPA: <https://www.altercpa.pro/en/start>
+Please refer to our **quick start guide** to make your CPA: <https://www.altercpa.pro/en/start>
 
-#### Профессиональная платформа для создания партнёрских CPA-сетей любой конфигурации.
+### Профессиональная платформа для создания партнёрских CPA-сетей любой конфигурации.
 
 Скрипт AlterCPA позволяет быстро и без хлопот развернуть свою партнёрку. Для вас — расширенная статистика и аналитика рекламных кампаний для арбитражников, удобный колл-центр для поставщиков, аналитика звонков и продаж, интеграция с другими партнёрскими сетям.
 
-Пожалуйста, ознакомьтесь с нашей инструкцией по быстрому запуску: <https://www.altercpa.pro/ru/start>
+Пожалуйста, ознакомьтесь с **гидом по быстрому запуску** своей CPA: <https://www.altercpa.pro/ru/start>
 
 ## We moved / Мы переехали
 
